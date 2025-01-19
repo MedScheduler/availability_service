@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from app.models import Availability
-from app.database import insert_availability, get_availabilities, get_availability_by_id, delete_availability, update_availability_in_db, get_availabilities_by_doctor_id
+from app.database import insert_availability, get_availabilities, get_availability_by_id, delete_availability, update_availability_in_db, get_availabilities_by_doctor_id, update_doctor_availability_in_db
 from bson import ObjectId
 
 router = APIRouter()
@@ -48,3 +48,13 @@ async def update_availability(availability_id: str, availability: Availability):
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Availability not found")
     return {"message": "Availability updated successfully"}
+
+@router.put("/availability/doctor/{doctor_id}", status_code=status.HTTP_200_OK)
+async def update_doctor_availability(doctor_id: str, availability: Availability):
+    availability_data = availability.dict(exclude_unset=True)
+    result = await update_doctor_availability_in_db(doctor_id, availability_data)
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Doctor availability not found")
+
+    return {"message": "Doctor availability updated successfully"}

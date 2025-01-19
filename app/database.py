@@ -44,3 +44,12 @@ async def update_availability_in_db(availability_id: str, availability_data: dic
         {"$set": availability_data}
     )
     return result
+
+# Função assíncrona para atualizar a disponibilidade de um médico no banco de dados
+async def update_doctor_availability_in_db(doctor_id: str, availability_data: dict):
+    # Atualiza a disponibilidade com base no doctor_id, que é uma string
+    result = await collection.update_one(
+        {"doctor_id": doctor_id},  # "doctor_id" é uma string, não um ObjectId
+        {"$set": availability_data}  # Atualiza os campos passados em availability_data
+    )
+    return result
